@@ -11,8 +11,13 @@ COMMON_COPTS = [
     "-Wunused-parameter",
     "-Wformat=2",
     "-Wno-missing-field-initializers",
-    "-Wno-missing-designated-field-initializers",
-]
+] + select({
+    # -Wmissing-designated-field-initializers is a GCC 14+ warning; Clang
+    # (used via Xcode on macOS) doesn't recognize the flag and errors under
+    # -Werror,-Wunknown-warning-option.
+    "//rules:macos_build": [],
+    "//conditions:default": ["-Wno-missing-designated-field-initializers"],
+})
 
 WASM_SIMD_COPTS = select({
     "//rules:wasm_build": ["-msimd128"],

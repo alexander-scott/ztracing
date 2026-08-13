@@ -5,4 +5,7 @@ config_setting(
     constraint_values = ["@@platforms//os:emscripten"],
 )
 
-
+config_setting(
+    name = "macos_build",
+    constraint_values = ["@@platforms//os:macos"],
+)
