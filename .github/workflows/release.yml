@@ -15,10 +15,8 @@ jobs:
         include:
           - os: ubuntu-latest
             artifact_name: ztracing-linux-x86_64
-          - os: macos-14
+          - os: macos-latest
             artifact_name: ztracing-macos-arm64
-          - os: macos-13
-            artifact_name: ztracing-macos-x86_64
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout

@@ -8,8 +8,14 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            artifact_name: ztracing-linux-x86_64
+          - os: macos-latest
+            artifact_name: ztracing-macos-arm64
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -18,12 +24,18 @@ jobs:
         uses: bazelbuild/setup-bazelisk@v3
 
       - name: Install GCC 14 and GL Dependencies
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y gcc-14 g++-14 libegl-dev libgles-dev
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100 --slave /usr/bin/g++ g++ /usr/bin/g++-14
 
-      - name: Run Tests
+      - name: Run Tests (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          bazel test //...
+
+      - name: Run Tests (Linux)
         env:
           CC: gcc-14
           CXX: g++-14
